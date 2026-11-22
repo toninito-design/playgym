@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#175c48"><title>Diario de gimnasio</title><style>body{margin:0;background:light-dark(#e5ede7,#101b17);color-scheme:light dark}</style></head><body><div id="gym-preview" class="viz-dotted-background" lang="es">
+  <main>
+    <header>Diario de gimnasio</header>
+    <nav aria-label="Secciones">
+      <button data-tab="registrar">Registrar</button>
+      <button data-tab="preparar" aria-pressed="true">Preparar</button>
+      <button data-tab="historial">Historial</button>
+    </nav>
+    <label>Ejercicio<select id="gym-exercise"></select></label>
+    <button id="gym-new" type="button">Añadir ejercicio</button>
+    <p id="gym-status" role="status"></p>
+    <section id="preparar">
+      <h2>Preparar sesión</h2>
+      <form id="gym-plan">
+        <div class="fields">
+          <label>Series efectivas<input name="series" type="number" min="1" max="30" value="6" required></label>
+          <label>Repeticiones<input name="reps" type="number" min="1" max="15" value="4" required></label>
+        </div>
+        <details><summary>Ajustes de peso y descanso</summary><div class="fields">
+          <label>Salto (kg)<input name="step" type="number" min="0.1" max="100" step="any" value="2.5" required></label>
+          <label>Mínimo (kg)<input name="min" type="number" min="0" max="10000" step="any" value="20" required></label>
+          <label>Descanso (segundos)<input name="rest" type="number" min="1" max="3600" value="60" required></label>
+        </div></details>
+        <button class="primary">Calcular pesos</button>
+      </form>
+      <div aria-live="polite">
+        <div class="result"><span>Peso efectivo sugerido</span><strong id="gym-weight">60 kg</strong><span id="gym-count">6 series de 4 repeticiones</span></div>
+        <p>Objetivo: 2 repeticiones en reserva.</p><h3>Aproximaciones</h3>
+        <ul id="gym-warms"><li><span>2 × 4</span><b>30 kg</b></li><li><span>2 × 4</span><b>37,5 kg</b></li><li><span>2 × 4</span><b>47,5 kg</b></li></ul>
+      </div>
+      <button id="gym-rest">Iniciar descanso · 1:00</button>
+    </section>
+    <section id="registrar" hidden>
+      <h2>Registrar sesión</h2>
+      <form id="gym-log">
+        <p>Apunta la última serie. Se contará como 6 series efectivas al mismo peso y repeticiones.</p>
+        <div class="fields">
+          <label>Peso (kg)<input name="weight" type="number" min="0" max="10000" step="any" required></label>
+          <label>Repeticiones<input name="reps" type="number" min="1" max="100" required></label>
+        </div>
+        <label>¿Podrías haber hecho alguna repetición más con buena técnica?
+          <select name="reserve">
+            <option value="">Sin responder</option>
+            <option value="0">No</option>
+            <option value="yes">Sí, sin precisar</option>
+            <option value="1">Sí, una</option>
+            <option value="2">Sí, dos</option>
+            <option value="3">Sí, tres o más</option>
+          </select>
+        </label>
+        <button class="primary">Guardar sesión</button>
+      </form>
+    </section>
+    <section id="historial" hidden>
+      <h2>Historial</h2>
+      <div id="gym-entries" aria-live="polite"></div>
+      <button id="gym-export" type="button">Descargar historial CSV</button><div id="gym-reference"><div class="result"><span>Ejemplo de press de pecho</span><strong>60 kg · 6 × 4</strong><span>2 repeticiones en reserva</span></div>
+      <ul><li><span>6 repeticiones</span><b>55 kg</b></li><li><span>8 repeticiones</span><b>47,5 kg</b></li><li><span>10 repeticiones</span><b>42,5 kg</b></li></ul></div>
+    </section>
+  </main>
+</div>
+<style>
+#gym-preview {color-scheme:light dark; padding:16px; color:light-dark(#172b27,#eaf6ed);font: 15px/1.45 system-ui,sans-serif;--gym-paper:light-dark(#f0f5ef,#172722);--gym-surface:light-dark(#fff,#223830);--gym-line:light-dark(#ccd9d2,#466357);--gym-accent:light-dark(#175c48,#a6e4c5);--gym-on:light-dark(#fff,#132c23)}
+#gym-preview * {box-sizing:border-box}
+#gym-preview main {max-width:410px;margin:auto;background:var(--gym-paper);padding:20px;border:1px solid var(--gym-line);border-radius:24px}
+#gym-preview header {font-size:25px;font-weight:700;margin-bottom:14px}
+#gym-preview nav {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-bottom:20px}
+#gym-preview button,#gym-preview input,#gym-preview select {font:inherit;color:inherit;min-height:44px;border-radius:9px;border:1px solid var(--gym-line);background:var(--gym-surface);padding:6px 8px}
+#gym-preview button {cursor:inherit}
+#gym-preview nav button {padding-inline:3px;font-size:13px}
+#gym-preview [aria-pressed="true"],#gym-preview .primary {background:var(--gym-accent);color:var(--gym-on);border-color:transparent}
+#gym-preview h2,#gym-preview h3 {margin:0 0 8px;font-size:18px}
+#gym-preview h3 {font-size:15px;margin-top:14px}
+#gym-preview .fields {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#gym-preview label {display:grid;gap:4px;font-size:13px}
+#gym-preview input,#gym-preview select,#gym-preview .primary {width:100%}
+#gym-preview form {display:grid;gap:10px}
+#gym-preview .result {display:grid;gap:2px;margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--gym-surface)}
+#gym-preview strong {font-size:23px;line-height:1.2}
+#gym-preview ul {padding:0;margin:0 0 12px;list-style:none}
+#gym-preview li {display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--gym-line)}
+#gym-preview #gym-new {margin-top:8px}
+#gym-preview #gym-status {margin:8px 0;font-size:14px}
+#gym-preview #gym-status:empty {margin:0;height:12px}
+#gym-preview details .fields {margin-top:10px}
+</style>
+<script src="app.js?v=4" defer></script>
+</body></html>
